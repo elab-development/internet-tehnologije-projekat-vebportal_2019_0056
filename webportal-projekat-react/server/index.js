@@ -1,7 +1,8 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import mongoose from 'mongoose';
 import connectToMongoDB from './utils/dbConnect.js';
+import authRouter from './routes/auth.route.js';
+import userRouter from './routes/user.route.js';
 
 dotenv.config();
 const port = process.env.PORT || 8000;
@@ -9,6 +10,16 @@ const port = process.env.PORT || 8000;
 connectToMongoDB();
 
 const app = express();
+app.use(express.json());
+
+app.get('/api', (req, res) => {
+  res.status(200).send({
+    message: 'API Works',
+  });
+});
+
+app.use('/api/auth', authRouter);
+app.use('/api/users', userRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
