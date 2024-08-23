@@ -51,7 +51,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className='min-h-screen mt-20'>
+    <div className='min-h-[80vh] my-20'>
       <div className='flex p-3 gap-5 max-w-3xl mx-auto flex-col md:flex-row md:items-center'>
         <div className='flex-1'>
           <Link to='/' className='text-4xl font-bold dark:text-white'>
