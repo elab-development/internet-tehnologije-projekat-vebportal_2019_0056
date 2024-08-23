@@ -1,14 +1,23 @@
 import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Label, TextInput, Spinner } from 'flowbite-react';
 import axios from 'axios';
 
+import {
+  signInStart,
+  signInSuccess,
+  signInFailure,
+} from '../redux/user/userSlice';
+
+
 const SignIn = () => {
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { loading, error: errorMessage } = useSelector((state) => state.user);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
@@ -16,31 +25,33 @@ const SignIn = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true);
-    setErrorMessage(null);
+    dispatch(signInStart());
 
     if (!formData.email) {
-      setErrorMessage('Please provide your email!');
-      setLoading(false);
+      dispatch(signInFailure('Please provide your email!'));
       return;
     }
 
     if (!formData.password) {
-      setErrorMessage('Please provide your password!');
-      setLoading(false);
+      dispatch(signInFailure('Please provide your password!'));
       return;
     }
 
     try {
-      await axios.post('/api/auth/signin', formData);
-      navigate('/');
+      const res = await axios.post('/api/auth/signin', formData);
+      if (res.status === 200) {
+        dispatch(signInSuccess(res.data));
+        navigate('/');
+      }
     } catch (error) {
-      console.error(error);
-      setErrorMessage(
-        'Something went wrong! Username or Email might be taken.'
+      dispatch(
+        signInFailure(
+          error?.response?.data?.message ||
+            error?.message ||
+            'Something went wrong!'
+        )
       );
-    } finally {
-      setLoading(false);
+    
     }
   };
 
