@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Alert, Button, Label, TextInput, Spinner } from 'flowbite-react';
 import axios from 'axios';
 
+import OAuth from '../components/OAuth';
+
 const SignUp = () => {
   const [formData, setFormData] = useState({});
   const [errorMessage, setErrorMessage] = useState(null);
@@ -101,6 +103,8 @@ const SignUp = () => {
             >
               {loading ? <Spinner size='sm' /> : 'Sign Up'}
             </Button>
+
+            <OAuth />
           </form>
           <div className='flex gap-2 text-sm mt-5'>
             <span>Already have an Account?</span>

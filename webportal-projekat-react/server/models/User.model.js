@@ -16,6 +16,11 @@ const UserSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    profilePicture: {
+      type: String,
+      default:
+        'https://pics.craiyon.com/2023-12-04/RkicXp6zSCCjyyXKyqg7Uw.webp',
+    },
   },
   {
     timestamps: true,
