@@ -1,5 +1,6 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import cookieParser from 'cookie-parser';
 import connectToMongoDB from './utils/dbConnect.js';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
@@ -11,7 +12,7 @@ connectToMongoDB();
 
 const app = express();
 app.use(express.json());
-
+app.use(cookieParser());
 app.get('/api', (req, res) => {
   res.status(200).send({
     message: 'API Works',

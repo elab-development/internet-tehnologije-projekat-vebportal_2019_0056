@@ -1,25 +1,35 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Alert, Button, TextInput } from 'flowbite-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Alert, Button, Spinner, TextInput } from 'flowbite-react';
 import {
   getDownloadURL,
   getStorage,
   ref,
   uploadBytesResumable,
 } from 'firebase/storage';
+import axios from 'axios';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
 
 import { app } from '../../utils/firebase';
+import {
+  updateStart,
+  updateSuccess,
+  updateFailure,
+} from '../../redux/user/userSlice';
 
 const DashProfile = () => {
+  const [formData, setFormData] = useState({});
   const [imageFile, setImageFile] = useState(null);
   const [imageFileUrl, setImageFileUrl] = useState(null);
   const [fileUploadingProgress, setFileUploadingProgress] = useState(null);
   const [fileUploadingError, setFileUploadingError] = useState(null);
+  const [imageFileUploading, setImageFileUploading] = useState(false);
+  const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
 
   const filePickerRef = useRef();
-  const { currentUser } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const { currentUser, loading, error } = useSelector((state) => state.user);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -31,6 +41,7 @@ const DashProfile = () => {
   };
 
   const uploadImageToFB = async () => {
+    setImageFileUploading(true);
     setFileUploadingError(null);
     const storage = getStorage(app);
     const fileName = new Date().getTime() + imageFile.name;
@@ -50,14 +61,64 @@ const DashProfile = () => {
         setFileUploadingProgress(null);
         setImageFile(null);
         setImageFileUrl(null);
+        setImageFileUploading(false);
         console.error(error);
       },
       () => {
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
           setImageFileUrl(downloadURL);
+          setFormData({ ...formData, profilePicture: downloadURL });
+          setImageFileUploading(false);
         });
       }
     );
+  };
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.id]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    console.log(formData);
+
+    if (Object.keys(formData).length === 0) {
+      return;
+    }
+
+    try {
+      dispatch(updateStart());
+      if (formData.password?.length > 0) {
+        if (
+          !formData.confirmPassword ||
+          formData.confirmPassword?.length === 0
+        ) {
+          dispatch(updateFailure('You must confirm your password!'));
+          return;
+        } else if (formData.password !== formData.confirmPassword) {
+          dispatch(updateFailure('Passwords do not match!'));
+          return;
+        }
+      }
+
+      const res = await axios.put(
+        `/api/users/update/${currentUser._id}`,
+        formData
+      );
+      if (res.status === 202) {
+        dispatch(updateSuccess(res.data));
+        setUpdateUserSuccess('Profile updated successfully!');
+      }
+    } catch (error) {
+      dispatch(
+        updateFailure(
+          error?.response?.data?.message ||
+            error?.message ||
+            'Something went wrong!'
+        )
+      );
+    }
   };
 
   useEffect(() => {
@@ -69,7 +130,7 @@ const DashProfile = () => {
   return (
     <div className='max-w-lg mx-auto p-3 w-full'>
       <h1 className='my-7 text-center font-semibold text-3xl'>Profile</h1>
-      <form className='flex flex-col gap-4'>
+      <form className='flex flex-col gap-4' onSubmit={handleSubmit}>
         <input
           type='file'
           accept='image/*'
@@ -122,19 +183,48 @@ const DashProfile = () => {
           id='username'
           placeholder='username'
           defaultValue={currentUser.username}
+          onChange={handleChange}
         />
         <TextInput
           type='email'
           id='email'
           placeholder='email'
           defaultValue={currentUser.email}
+          onChange={handleChange}
         />
-        <TextInput type='password' id='password' placeholder='password' />
-        <Button type='submit' gradientDuoTone='purpleToBlue' outline>
-          Update
+
+        <TextInput
+          type='password'
+          id='password'
+          placeholder='password'
+          onChange={handleChange}
+        />
+        <TextInput
+          type='password'
+          id='confirmPassword'
+          placeholder='confirm password'
+          onChange={handleChange}
+        />
+        <Button
+          type='submit'
+          gradientDuoTone='purpleToBlue'
+          outline
+          disabled={imageFileUploading || loading}
+        >
+          {loading ? <Spinner size='sm' /> : 'Update'}
         </Button>
       </form>
-      <div className='text-red-500 flex justify-between mt-5'>
+      {error && (
+        <Alert className='mt-5' color='failure'>
+          {error}
+        </Alert>
+      )}
+      {updateUserSuccess && (
+        <Alert className='mt-5' color='success'>
+          {updateUserSuccess}
+        </Alert>
+      )}
+      <div className='text-red-500 flex justify-between my-5'>
         <span className='cursor-pointer'>Delete Account</span>
         <span className='cursor-pointer'>Sign Out</span>
       </div>
