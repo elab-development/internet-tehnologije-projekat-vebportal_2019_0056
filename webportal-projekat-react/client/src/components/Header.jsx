@@ -2,17 +2,30 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
+import axios from 'axios';
 import { AiOutlineSearch } from 'react-icons/ai';
 import { FaMoon, FaRegSun } from 'react-icons/fa';
 
 import Logo from '../assets/logo.png';
 import { toggleTheme } from '../redux/theme/themeSlice';
+import { signOutSuccess } from '../redux/user/userSlice';
 
 const Header = () => {
   const path = useLocation().pathname;
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
+
+  const handleSignOut = async () => {
+    try {
+      const res = await axios.post('/api/users/signout');
+      if (res.status === 200) {
+        dispatch(signOutSuccess());
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   return (
     <Navbar className='border-b-2'>
@@ -68,7 +81,7 @@ const Header = () => {
               <Dropdown.Item>Profile</Dropdown.Item>
             </Link>
             <Dropdown.Divider />
-            <Dropdown.Item>Sign Out</Dropdown.Item>
+            <Dropdown.Item onClick={handleSignOut}>Sign Out</Dropdown.Item>
           </Dropdown>
         ) : (
           <Link to='/sign-in'>

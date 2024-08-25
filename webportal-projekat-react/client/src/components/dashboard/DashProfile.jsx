@@ -20,6 +20,7 @@ import {
   deleteUserStart,
   deleteUserSuccess,
   deleteUserFailure,
+  signOutSuccess,
 } from '../../redux/user/userSlice';
 
 const DashProfile = () => {
@@ -123,6 +124,17 @@ const DashProfile = () => {
             'Something went wrong!'
         )
       );
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      const res = await axios.post('/api/users/signout');
+      if (res.status === 200) {
+        dispatch(signOutSuccess());
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -254,7 +266,9 @@ const DashProfile = () => {
         <span className='cursor-pointer' onClick={() => setShowModal(true)}>
           Delete Account
         </span>
-        <span className='cursor-pointer'>Sign Out</span>
+        <span className='cursor-pointer' onClick={handleSignOut}>
+          Sign Out
+        </span>
       </div>
       <Modal
         show={showModal}
