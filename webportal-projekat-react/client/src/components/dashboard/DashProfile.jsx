@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Alert, Button, Spinner, TextInput } from 'flowbite-react';
+import { Alert, Button, Modal, Spinner, TextInput } from 'flowbite-react';
 import {
   getDownloadURL,
   getStorage,
@@ -10,12 +10,16 @@ import {
 import axios from 'axios';
 import { CircularProgressbar } from 'react-circular-progressbar';
 import 'react-circular-progressbar/dist/styles.css';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 import { app } from '../../utils/firebase';
 import {
   updateStart,
   updateSuccess,
   updateFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
 } from '../../redux/user/userSlice';
 
 const DashProfile = () => {
@@ -26,6 +30,7 @@ const DashProfile = () => {
   const [fileUploadingError, setFileUploadingError] = useState(null);
   const [imageFileUploading, setImageFileUploading] = useState(false);
   const [updateUserSuccess, setUpdateUserSuccess] = useState(null);
+  const [showModal, setShowModal] = useState(false);
 
   const filePickerRef = useRef();
   const dispatch = useDispatch();
@@ -113,6 +118,27 @@ const DashProfile = () => {
     } catch (error) {
       dispatch(
         updateFailure(
+          error?.response?.data?.message ||
+            error?.message ||
+            'Something went wrong!'
+        )
+      );
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setShowModal(false);
+
+    try {
+      dispatch(deleteUserStart());
+
+      const res = await axios.delete(`/api/users/delete/${currentUser._id}`);
+      if (res.status === 200) {
+        dispatch(deleteUserSuccess(res.data));
+      }
+    } catch (error) {
+      dispatch(
+        deleteUserFailure(
           error?.response?.data?.message ||
             error?.message ||
             'Something went wrong!'
@@ -225,9 +251,43 @@ const DashProfile = () => {
         </Alert>
       )}
       <div className='text-red-500 flex justify-between my-5'>
-        <span className='cursor-pointer'>Delete Account</span>
+        <span className='cursor-pointer' onClick={() => setShowModal(true)}>
+          Delete Account
+        </span>
         <span className='cursor-pointer'>Sign Out</span>
       </div>
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete your account?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button
+                color='failure'
+                onClick={handleDeleteUser}
+                disabled={loading}
+              >
+                {loading ? <Spinner size='sm' /> : "Yer, I'm sure"}
+              </Button>
+              <Button
+                color='gray'
+                onClick={() => setShowModal(false)}
+                disabled={loading}
+              >
+                No, abort
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
