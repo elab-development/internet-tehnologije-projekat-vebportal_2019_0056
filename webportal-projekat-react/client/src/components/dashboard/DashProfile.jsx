@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Alert, Button, Modal, Spinner, TextInput } from 'flowbite-react';
 import {
@@ -22,6 +23,7 @@ import {
   deleteUserFailure,
   signOutSuccess,
 } from '../../redux/user/userSlice';
+import { usePrivilege } from '../../hooks/usePrivilege.hook';
 
 const DashProfile = () => {
   const [formData, setFormData] = useState({});
@@ -36,6 +38,7 @@ const DashProfile = () => {
   const filePickerRef = useRef();
   const dispatch = useDispatch();
   const { currentUser, loading, error } = useSelector((state) => state.user);
+  const isAdminEditor = usePrivilege('admineditor');
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
@@ -251,6 +254,17 @@ const DashProfile = () => {
         >
           {loading ? <Spinner size='sm' /> : 'Update'}
         </Button>
+        {isAdminEditor && (
+          <Link to='/create-post'>
+            <Button
+              type='button'
+              gradientDuoTone='purpleToPink'
+              className='w-full'
+            >
+              Create new Post
+            </Button>
+          </Link>
+        )}
       </form>
       {error && (
         <Alert className='mt-5' color='failure'>

@@ -21,6 +21,14 @@ const UserSchema = new mongoose.Schema(
       default:
         'https://pics.craiyon.com/2023-12-04/RkicXp6zSCCjyyXKyqg7Uw.webp',
     },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
+    isEditor: {
+      type: Boolean,
+      default: false,
+    },
   },
   {
     timestamps: true,
