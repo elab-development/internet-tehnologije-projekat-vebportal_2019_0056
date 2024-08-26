@@ -5,6 +5,7 @@ import connectToMongoDB from './utils/dbConnect.js';
 import authRouter from './routes/auth.route.js';
 import userRouter from './routes/user.route.js';
 import categoryRouter from './routes/category.route.js';
+import postRouter from './routes/post.route.js';
 
 
 dotenv.config();
@@ -24,6 +25,7 @@ app.get('/api', (req, res) => {
 app.use('/api/auth', authRouter);
 app.use('/api/users', userRouter);
 app.use('/api/categories', categoryRouter);
+app.use('/api/posts', postRouter);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
