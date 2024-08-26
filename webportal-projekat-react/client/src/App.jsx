@@ -27,7 +27,7 @@ function App() {
         </Route>
 
         <Route element={<AdminEditorRoute />}>
-          <Route path='/create-route' element={<CreatePost />} />
+          <Route path='/create-post' element={<CreatePost />} />
         </Route>
 
         <Route path='/projects' element={<Projects />} />
