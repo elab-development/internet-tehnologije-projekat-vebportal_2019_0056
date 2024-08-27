@@ -6,6 +6,9 @@ const router = express.Router();
 // POST Endpoints
 router.post('/signout', verifyToken, userController.signOut);
 
+// GET Endpoints
+router.get('/', verifyToken, userController.getUsers);
+
 // PUT Endpoints
 router.put('/update/:userId', verifyToken, userController.updateUser);
 
