@@ -42,7 +42,7 @@ export const getPosts = async (req, res, next) => {
     const sortDirection = req.query.order === 'asc' ? 1 : -1;
 
     const posts = await Post.find({
-      ...(req.query.userId && { author: req.query.userID }),
+      ...(req.query.userId && { author: req.query.userId }),
       ...(req.query.category && { category: req.query.category }),
       ...(req.query.slug && { slug: req.query.slug }),
       ...(req.query.postId && { _id: req.query.postId }),
