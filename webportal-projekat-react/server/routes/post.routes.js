@@ -7,4 +7,7 @@ const router = express.Router();
 // POST Endpoints
 router.post('/', verifyToken, postController.createPost);
 
+// GET Endpoints
+router.get('/', postController.getPosts);
+
 export default router;
