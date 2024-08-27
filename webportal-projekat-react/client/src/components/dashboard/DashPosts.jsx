@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { Button, Table } from 'flowbite-react';
+import { Button, Modal, Table } from 'flowbite-react';
 import axios from 'axios';
 import { FaRegEdit, FaTrash } from 'react-icons/fa';
 
 import { usePrivilege } from '../../hooks/usePrivilege.hook';
+import { HiOutlineExclamationCircle } from 'react-icons/hi';
 
 const DashPosts = () => {
   const [userPosts, setUserPosts] = useState([]);
   const [showMore, setShowMore] = useState(true);
+  const [showModal, setShowModal] = useState(false);
+  const [postIdToDelete, setPostIdToDelete] = useState(null);
 
   const isAdminEditor = usePrivilege('admineditor');
   const { currentUser } = useSelector((state) => state.user);
@@ -53,6 +56,25 @@ const DashPosts = () => {
     }
   };
 
+  const handleDeletePost = async () => {
+    try {
+      const res = await axios.delete(
+        `api/posts/${postIdToDelete}/${currentUser._id}`
+      );
+
+      if (res.status === 200) {
+        setUserPosts((prev) =>
+          prev.filter((post) => post._id !== postIdToDelete)
+        );
+      }
+
+      setShowModal(false);
+    } catch (error) {
+      setShowModal(false);
+      console.error(error);
+    }
+  };
+
   return (
     <div className='table-auto overflow-x-scroll md:mx-auto p-3 scrollbar scrollbar-track-slate-100 scrollbar-thumb-slate-300 dark:scrollbar-track-slate-700 dark:scrollbar-thumn-slate-500'>
       {isAdminEditor && userPosts.length > 0 ? (
@@ -90,7 +112,16 @@ const DashPosts = () => {
                   </Table.Cell>
                   <Table.Cell>{post.category?.name}</Table.Cell>
                   <Table.Cell>
-                    <Button color='failure' className='p-0' pill>
+                    <Button
+                      type='button'
+                      color='failure'
+                      className='p-0'
+                      pill
+                      onClick={() => {
+                        setShowModal(true);
+                        setPostIdToDelete(post._id);
+                      }}
+                    >
                       <FaTrash size={15} />
                     </Button>
                   </Table.Cell>
@@ -124,6 +155,31 @@ const DashPosts = () => {
           </p>
         </div>
       )}
+
+      <Modal
+        show={showModal}
+        onClose={() => setShowModal(false)}
+        popup
+        size='md'
+      >
+        <Modal.Header />
+        <Modal.Body>
+          <div className='text-center'>
+            <HiOutlineExclamationCircle className='h-14 w-14 text-gray-400 dark:text-gray-200 mb-4 mx-auto' />
+            <h3 className='mb-5 text-lg text-gray-500 dark:text-gray-400'>
+              Are you sure you want to delete this post?
+            </h3>
+            <div className='flex justify-center gap-4'>
+              <Button color='failure' onClick={handleDeletePost}>
+                Yer, I'm sure
+              </Button>
+              <Button color='gray' onClick={() => setShowModal(false)}>
+                No, abort
+              </Button>
+            </div>
+          </div>
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

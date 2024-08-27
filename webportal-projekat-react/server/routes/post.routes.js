@@ -10,4 +10,15 @@ router.post('/', verifyToken, postController.createPost);
 // GET Endpoints
 router.get('/', postController.getPosts);
 
+// PUT Endpoints
+router.put(
+    '/content/:postId/:userId',
+    verifyToken,
+    postController.updateContent
+  );
+  router.put('/:postId/:userId', verifyToken, postController.updatePost);
+  
+  // DELETE Endpoints
+  router.delete('/:postId/:userId', verifyToken, postController.deletePost);
+
 export default router;
