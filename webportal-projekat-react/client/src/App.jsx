@@ -8,6 +8,7 @@ import Dashboard from './pages/Dashboard';
 import Projects from './pages/Projects';
 import CreatePost from './pages/CreatePost';
 import UpdatePost from './pages/UpdatePost';
+import PostPage from './pages/PostPage';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
@@ -32,6 +33,7 @@ function App() {
           <Route path='/update-post/:postId' element={<UpdatePost />} />
         </Route>
 
+        <Route path='/post/:postSlug' element={<PostPage />} />
         <Route path='/projects' element={<Projects />} />
       </Routes>
       <Footer />
