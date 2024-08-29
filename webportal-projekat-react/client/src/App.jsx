@@ -13,6 +13,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
 import AdminEditorRoute from './components/AdminEditorRoute';
+import ScrollToTop from './components/ScrollToTop';
 
 function App() {
   return (
@@ -37,6 +38,8 @@ function App() {
         <Route path='/projects' element={<Projects />} />
       </Routes>
       <Footer />
+
+      <ScrollToTop />
     </BrowserRouter>
   );
 }
