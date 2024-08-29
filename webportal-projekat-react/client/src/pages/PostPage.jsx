@@ -3,6 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Button, Spinner, Tooltip } from 'flowbite-react';
 import axios from 'axios';
 import CommentSection from '../components/posts/CommentSection';
+import RecentPosts from '../components/posts/RecentPosts';
 
 const PostPage = () => {
   const [loading, setLoading] = useState(true);
@@ -87,6 +88,10 @@ const PostPage = () => {
       ></div>
 
       <CommentSection postId={post?._id} />
+
+      <div className='max-w-full mx-auto w-full'>
+        <RecentPosts />
+      </div>
     </main>
   );
 };
