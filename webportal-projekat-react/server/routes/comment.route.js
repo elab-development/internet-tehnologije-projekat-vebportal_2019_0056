@@ -11,4 +11,13 @@ router.post('/', verifyToken, commentController.createComment);
 router.get('/', verifyToken, commentController.getComments);
 router.get('/getPostComments/:postId', commentController.getPostComments);
 
+router.get('/:id', commentController.getComment);
+
+// PUT Endpoints
+router.put('/like/:commentId', verifyToken, commentController.likeComment);
+router.put('/:id', verifyToken, commentController.updateComment);
+
+// DELETE Endpoints
+router.delete('/:id', verifyToken, commentController.deleteComment);
+
 export default router;
