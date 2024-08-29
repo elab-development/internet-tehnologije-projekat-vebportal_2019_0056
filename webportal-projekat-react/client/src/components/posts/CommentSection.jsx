@@ -1,18 +1,27 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { Alert, Button, Spinner, Textarea } from 'flowbite-react';
 import axios from 'axios';
 
+import Comment from './Comment';
+
 const CommentSection = ({ postId }) => {
   const [comment, setComment] = useState('');
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [comments, setComments] = useState([]);
+  const [refetch, setRefetch] = useState(false);
 
   const { currentUser } = useSelector((state) => state.user);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!comment) {
+      setSubmitError('Please provide some comment!');
+      return;
+    }
 
     setLoading(true);
     try {
@@ -25,6 +34,7 @@ const CommentSection = ({ postId }) => {
       if (res.status === 201) {
         setComment('');
         setLoading(false);
+        setRefetch(!refetch);
       }
     } catch (error) {
       console.log(error);
@@ -36,6 +46,21 @@ const CommentSection = ({ postId }) => {
       );
     }
   };
+
+  useEffect(() => {
+    const fetchComments = async () => {
+      try {
+        const res = await axios.get(`/api/comments/getPostComments/${postId}`);
+        if (res.status === 200) {
+          setComments(res.data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchComments();
+  }, [postId, refetch]);
 
   return (
     <div className='max-w-2xl mx-auto w-full p-3'>
@@ -88,8 +113,28 @@ const CommentSection = ({ postId }) => {
               {loading ? <Spinner size='sm' /> : 'Publish'}
             </Button>
           </div>
-          {submitError && <Alert color='failure'>{submitError}</Alert>}
+          {submitError && (
+            <Alert className='mt-5' color='failure'>
+              {submitError}
+            </Alert>
+          )}
         </form>
+      )}
+
+      {comments?.length === 0 ? (
+        <p className='text-sm my-5'>No comments.</p>
+      ) : (
+        <>
+          <div className='text-sm my-5 flex items-center gap-1'>
+            <p>Comments:</p>
+            <div className='border border-gray-400 py-1 px-2 rounded-sm'>
+              {comments.length}
+            </div>
+          </div>
+          {comments.map((comm) => (
+            <Comment key={comm._id} comment={comm} />
+          ))}
+        </>
       )}
     </div>
   );
