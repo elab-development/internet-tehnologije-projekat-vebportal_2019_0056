@@ -4,11 +4,14 @@ import { Link, useLocation } from 'react-router-dom';
 import { Sidebar } from 'flowbite-react';
 import axios from 'axios';
 import {
+  HiAnnotation,
   HiArrowSmRight,
   HiDocumentText,
   HiOutlineUserGroup,
   HiUser,
 } from 'react-icons/hi';
+import { BsChatRightQuote } from 'react-icons/bs';
+import { RiChatQuoteLine } from 'react-icons/ri';
 
 import { signOutSuccess } from '../../redux/user/userSlice';
 import { usePrivilege } from '../../hooks/usePrivilege.hook';
@@ -78,6 +81,19 @@ const DashSidebar = () => {
                 as='div'
               >
                 Posts
+              </Sidebar.Item>
+            </Link>
+          )}
+
+          {isAdmin && (
+            <Link to='/dashboard?tab=comments'>
+              <Sidebar.Item
+                active={tab === 'comments'}
+                icon={RiChatQuoteLine}
+                className='cursor-pointer'
+                as='div'
+              >
+                Comments
               </Sidebar.Item>
             </Link>
           )}
