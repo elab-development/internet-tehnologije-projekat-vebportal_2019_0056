@@ -4,13 +4,12 @@ import { Link, useLocation } from 'react-router-dom';
 import { Sidebar } from 'flowbite-react';
 import axios from 'axios';
 import {
-  HiAnnotation,
   HiArrowSmRight,
+  HiChartPie,
   HiDocumentText,
   HiOutlineUserGroup,
   HiUser,
 } from 'react-icons/hi';
-import { BsChatRightQuote } from 'react-icons/bs';
 import { RiChatQuoteLine } from 'react-icons/ri';
 
 import { signOutSuccess } from '../../redux/user/userSlice';
@@ -58,6 +57,19 @@ const DashSidebar = () => {
               Profile
             </Sidebar.Item>
           </Link>
+
+          {isAdmin && (
+            <Link to='/dashboard?tab=overview'>
+              <Sidebar.Item
+                active={tab === 'overview'}
+                icon={HiChartPie}
+                className='cursor-pointer'
+                as='div'
+              >
+                Overview
+              </Sidebar.Item>
+            </Link>
+          )}
 
           {isAdmin && (
             <Link to='/dashboard?tab=users'>
