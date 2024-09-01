@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react';
 import axios from 'axios';
 import { AiOutlineSearch } from 'react-icons/ai';
@@ -11,7 +11,12 @@ import { toggleTheme } from '../redux/theme/themeSlice';
 import { signOutSuccess } from '../redux/user/userSlice';
 
 const Header = () => {
-  const path = useLocation().pathname;
+  const [searchTerm, setSearchTerm] = useState('');
+
+  const location = useLocation();
+  const path = location.pathname;
+  const navigate = useNavigate();
+
   const dispatch = useDispatch();
   const { currentUser } = useSelector((state) => state.user);
   const { theme } = useSelector((state) => state.theme);
@@ -27,6 +32,22 @@ const Header = () => {
     }
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set('searchTerm', searchTerm);
+    const searchQuery = urlParams.toString();
+    navigate(`/search?${searchQuery}`);
+  };
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get('searchTerm');
+    if (searchTermFromUrl) {
+      setSearchTerm(searchTermFromUrl);
+    }
+  }, [location.search]);
+
   return (
     <Navbar className='border-b-2'>
       <Link
@@ -37,12 +58,14 @@ const Header = () => {
         <span>Wired</span>
       </Link>
 
-      <form>
+      <form onSubmit={handleSubmit}>
         <TextInput
           type='text'
           placeholder='Search...'
           rightIcon={AiOutlineSearch}
-          className='hidden lg:inline '
+          className='hidden lg:inline'
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </form>
       <Button
@@ -65,7 +88,7 @@ const Header = () => {
 
         {currentUser ? (
           <Dropdown
-           className='z-50'
+            className='z-50'
             arrowIcon={false}
             inline
             label={
