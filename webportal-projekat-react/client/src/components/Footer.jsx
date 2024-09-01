@@ -38,7 +38,7 @@ const Footer = () => {
                   Wired Original
                 </FooterFB.Link>
                 <FooterFB.Link
-                  href='/about'
+                  href='/search'
                   target='_blank'
                   rel='noopener noreferrer'
                 >
