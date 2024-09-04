@@ -54,10 +54,7 @@ const PostPage = () => {
         {post?.title}
       </h1>
 
-      <Link
-        to={`/search?category=${post?.category}`}
-        className='self-center mt-5'
-      >
+      <Link to={'/search'} className='self-center mt-5'>
         <Tooltip
           content={post?.category?.name}
           style='light'

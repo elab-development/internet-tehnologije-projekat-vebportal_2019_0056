@@ -90,7 +90,8 @@ const DashProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    console.log(formData);
+    setUpdateUserSuccess(null);
+    setFileUploadingProgress(null);
 
     if (Object.keys(formData).length === 0) {
       return;

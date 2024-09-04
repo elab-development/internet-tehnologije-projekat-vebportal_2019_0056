@@ -117,8 +117,8 @@ export const google = async (req, res, next) => {
       const token = jwt.sign(
         {
           id: newUser._id,
-          isAdmin: user.isAdmin,
-          isEditor: user.isEditor,
+          isAdmin: newUser.isAdmin,
+          isEditor: newUser.isEditor,
         },
         process.env.JWT_SECRET,
         { expiresIn: '7d' }

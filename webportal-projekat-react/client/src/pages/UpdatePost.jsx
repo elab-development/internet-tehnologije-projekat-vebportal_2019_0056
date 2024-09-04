@@ -7,7 +7,7 @@ import 'react-quill/dist/quill.snow.css';
 import axios from 'axios';
 
 const UpdatePost = () => {
-  const [formData, setFormData] = useState({});
+  
   const [content, setContent] = useState('');
   const [submitLoading, setSubmitLoading] = useState(false);
   const [submitError, setSubmitError] = useState(null);

@@ -89,7 +89,9 @@ const Search = () => {
     setLoading(true);
 
     try {
-      const res = await axios.get(`/api/posts?${searchQuery}`);
+      const res = await axios.get(
+        `/api/posts?${searchQuery}&startIndex=${startIndex}`
+      );
 
       if (res.status === 200) {
         setLoading(false);

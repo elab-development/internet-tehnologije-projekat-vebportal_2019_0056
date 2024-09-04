@@ -27,7 +27,7 @@ const posts = [
       category: 'Data Engineering',
       image:
         'https://miro.medium.com/v2/resize:fit:720/format:webp/0*k1mwTj0BpJuP0TDi',
-      slug: 'etflix-data-engineering',
+      slug: 'netflix-data-engineering',
     },
     {
       title: "Meta's approach to machine learning prediction robustness",
@@ -37,7 +37,7 @@ const posts = [
       category: 'Machine Learning',
       image:
         'https://engineering.fb.com/wp-content/uploads/2022/07/Eng-Blog-Self-Serve-Hero-Images-DEBUGGING-203-Teale-1.jpg',
-      slug: 'data-infrastructure/machine-learning-ml-prediction-robustness-meta',
+      slug: 'data-infrastructure-machine-learning-ml-prediction-robustness-meta',
     },
     {
       title: 'TypeScript Generics - a cheat sheet',

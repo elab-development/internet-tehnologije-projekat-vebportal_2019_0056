@@ -72,6 +72,7 @@ const Header = () => {
         className='w-12 h-10 flex items-center lg:hidden'
         color='gray'
         pill
+        onClick={handleSubmit}
       >
         <AiOutlineSearch />
       </Button>

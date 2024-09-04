@@ -21,6 +21,7 @@ const CommentSection = ({ postId }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setSubmitError(null);
 
     if (!comment) {
       setSubmitError('Please provide some comment!');

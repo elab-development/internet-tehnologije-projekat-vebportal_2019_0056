@@ -89,7 +89,7 @@ const Comment = ({ comment, onLike, onEdit, onDelete }) => {
               </p>
 
               {currentUser &&
-                (currentUser._id === comment.userId._id || isAdmin) && (
+                 (currentUser?._id === comment?.userId?._id || isAdmin) && (
                   <>
                     <button
                       type='button'

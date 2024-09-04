@@ -54,7 +54,7 @@ const importData = async () => {
         post.author = editorUser;
       }
 
-      return { ...post, author: adminUser };
+      return post;
     });
 
     await Post.insertMany(samplePosts);

@@ -92,8 +92,8 @@ const DashComments = () => {
                   <Table.Cell className='flex flex-col'>
                     {comment.numberOfLikes}
                   </Table.Cell>
-                  <Table.Cell>{comment.postId._id}</Table.Cell>
-                  <Table.Cell>{comment.userId._id}</Table.Cell>
+                  <Table.Cell>{comment?.postId?.title}</Table.Cell>
+                  <Table.Cell>{comment?.userId?.username}</Table.Cell>
                   <Table.Cell>
                     <Button
                       type='button'
