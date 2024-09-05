@@ -1,5 +1,7 @@
 <?php
 
+
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\LoginRegisterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -19,6 +21,9 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::get('/categories', [CategoryController::class, 'index']);
+Route::get('/categories/{id}', [CategoryController::class, 'show']);
+
 Route::post('/register', [LoginRegisterController::class, 'register']);
 Route::post('/login', [LoginRegisterController::class, 'login']);
 
@@ -27,6 +32,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/profile', function (Request $request) {
         return auth()->user();
     });
+
+    Route::resource('/categories', CategoryController::class)
+        ->only(['store', 'update', 'destroy']);
 
 
     Route::post('/logout', [LoginRegisterController::class, 'logout']);
