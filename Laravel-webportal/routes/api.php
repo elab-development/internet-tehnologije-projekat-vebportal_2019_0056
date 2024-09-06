@@ -2,6 +2,7 @@
 
 
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\LoginRegisterController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
@@ -32,6 +33,9 @@ Route::get('/categories/{id}', [CategoryController::class, 'show']);
 Route::get('/posts', [PostController::class, 'index']);
 Route::get('/posts/{id}', [PostController::class, 'show']);
 
+Route::get('/comments', [CommentController::class, 'index']);
+Route::get('/comments/{id}', [CommentController::class, 'show']);
+
 Route::post('/register', [LoginRegisterController::class, 'register']);
 Route::post('/login', [LoginRegisterController::class, 'login']);
 
@@ -45,6 +49,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         ->only(['store', 'update', 'destroy']);
 
     Route::resource('/posts', PostController::class)
+        ->only(['store', 'update', 'destroy']);
+
+    Route::resource('/comments', CommentController::class)
         ->only(['store', 'update', 'destroy']);
 
 
